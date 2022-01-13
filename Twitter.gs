@@ -15,8 +15,8 @@ function tweetLodiwithPhoto() {
   
   let dayObj = getLiturgicDay();
 
-  let tweetDay = dayColor[dayObj.color]+"  "+stringColorMailingList[dayObj.color]+ "  " +dayColor[dayObj.color];//+"\u000a"+getdayFull().toString().replace(/###/g,"\u000a");
-  let tweetPsalm = tweetDay + "\u000a\u000a#Oremos\u000a"+lastVerseFullES().toString().replace(/###/g,"\u000a");
+  let tweetDay = dayColor[dayObj.color]+"  "+stringColorMailingList[dayObj.color]+ "  " +dayColor[dayObj.color]+"\u000a"+getdayFullES().toString().replace(/###/g,"\u000a");
+  let tweetPsalm = "\u000a\u000a#Oremos\u000a"+lastVerseFullES().toString().replace(/###/g,"\u000a");
 
   var props = PropertiesService.getScriptProperties();                                      //New Properties Service
   props.setProperties(twitterKeys);                                                         //Pass Authentication through Service
@@ -35,27 +35,27 @@ function tweetLodiwithPhoto() {
   try {
     var service = new Twitterlib.OAuth(props);                                                   //Attempt Connection with Service
     // if too long for tweeting
-    // if (tweetPsalm.length > 260) {
-    //   // tweet media
-    //   let res = service.uploadMedia(file, null);
-    //   //tweet the psalm
-    //   let response = tweetThis(service, tweetPsalm, {'media_ids': res.media_id_string});
-    //   if (response) {                                                                            //If response is detected... 
-    //     setTwitterFollowersES(response.user.followers_count);
-    //   }
-      // //add caption as response
-      // tweetThis(service,  '@unsalmoalgiorno\u000a' +tweetDay, { in_reply_to_status_id: response.id_str });
-      // if (dayObj.text) {
-      //   tweetThis(service,  '@unsalmoalgiorno\u000a' +dayObj.text.toString().replace(/###/g,"\u000a"), { 'in_reply_to_status_id': response.id_str  });
-      // }
-    //} else {
+    if (tweetPsalm.length + tweetDay.length > 260) {
+      //tweet media
+      let res = service.uploadMedia(file, null);
+      //tweet the psalm
+      let response = tweetThis(service, tweetPsalm, {'media_ids': res.media_id_string});
+      if (response) {                                                                            //If response is detected... 
+        setTwitterFollowersES(response.user.followers_count);
+      }
+      //add caption as response
+      tweetThis(service,  '@unsalmoaldia\u000a' +tweetDay, { in_reply_to_status_id: response.id_str });
+      if (dayObj.textES) {
+        tweetThis(service,  '@unsalmoaldia\u000a' +dayObj.textES.toString().replace(/###/g,"\u000a"), { 'in_reply_to_status_id': response.id_str  });
+      }
+    } else {
       //if short enough tweet all together
       let res = service.uploadMedia(file, null);
-      var response = tweetThis(service, tweetPsalm, {'media_ids': res.media_id_string});
+      var response = tweetThis(service, tweetDay + tweetPsalm, {'media_ids': res.media_id_string});
       if (response) {                             //If response is detected... 
         setTwitterFollowersES(response.user.followers_count); 
       }
-    //}
+    }
     
   }
   catch (err) { 

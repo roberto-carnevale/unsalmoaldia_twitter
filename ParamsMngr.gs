@@ -64,6 +64,10 @@ function getdayFull() {
   return readParams().getRange("B9").getValue();
 }
 
+function getdayFullES() {
+  return readParams().getRange("B18").getValue();
+}
+
 function getWeekMsg () {
   return readParams().getRange("B10").getValue();
 }
